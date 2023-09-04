@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Stopwatch</title>
+  <style media="screen">
+    .inside{
+      position:relative;
+      bottom:295px;
+    }
+    #display{
+      font-weight: bold;
+      font-size: 40px;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #reset{
+      border-radius:100%;
+      border:0px;
+      background-color:#295a96;
+      padding:15px;
+      color:white;
+    }
+    .pause{
+      border-radius:100%;
+      border:0px;
+      background-color:red;
+      padding:15px;
+      padding-left:17px;
+      padding-right:17px;
+      color:white;
+
+    }
+    .play{
+      border-radius:100%;
+      border:0px;
+      background-color:green;
+      padding:15px;
+      color:white;
+
+    }
+    #toggle{
+      border-radius:100%;
+      border:0px;
+      padding:0px;
+
+    }
+    img{
+      width: 560px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <center>
+    <img src="watch.png" alt="">
+    <div class="inside">
+      <h2 id="display">00:00:00</h2>
+      <button id="toggle"><i class="fas fa-play play"></i></button>
+      <button id="reset"> <i class="fas fa-undo"> </i></button>
+    </div>
+  </center>
+  <script>
+    var startTime;
+    var running = false;
+    var elapsedTime = 0;
+    var display = document.getElementById('display');
+    var toggleButton = document.getElementById('toggle');
+    var resetButton = document.getElementById('reset');
+    var timerInterval;
+
+    toggleButton.addEventListener('click', toggle);
+    resetButton.addEventListener('click', reset);
+
+    function toggle() {
+      if (!running) {
+        startTime = Date.now() - elapsedTime;
+        running = true;
+        timerInterval = setInterval(updateDisplay, 10);
+        toggleButton.innerHTML = '<i class="fas fa-pause pause"></i>';
+      } else {
+        clearInterval(timerInterval);
+        running = false;
+        toggleButton.innerHTML = '<i class="fas fa-play play"></i>';
+      }
+    }
+
+    function reset() {
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      running = false;
+      updateDisplay();
+      toggleButton.innerHTML = '<i class="fas fa-play play"></i>';
+    }
+
+    function updateDisplay() {
+      var milliseconds = elapsedTime % 1000;
+      var seconds = Math.floor((elapsedTime / 1000) % 60);
+      var minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+      var hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+
+      display.textContent =
+        pad(hours, 2) + ':' +
+        pad(minutes, 2) + ':' +
+        pad(seconds, 2) + '.' +
+        pad(milliseconds, 3);
+
+      elapsedTime = Date.now() - startTime;
+    }
+
+    function pad(number, length) {
+      var str = '' + number;
+      while (str.length < length) {
+        str = '0' + str;
+      }
+      return str;
+    }
+  </script>
+</body>
+</html>
